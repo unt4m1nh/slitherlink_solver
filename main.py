@@ -30,11 +30,12 @@ class Slitherlink(object):
         # Define the position of a cell by its id
         cell_row = cell_id // self.width
         cell_col = cell_id % self.height
+        num_horizontal = self.height * (self.width + 1)
         # Return four integers
-        upper_edge = cell_row * self.width + cell_col + 1
-        lower_edge = (cell_row + 1) * self.width + cell_col + 1
-        left_edge = (self.height + 1) * self.width + cell_col * self.height + cell_row + 1
-        right_edge = (self.height + 1) * self.width + (cell_col + 1) * self.height + cell_row + 1
+        upper_edge = cell_id
+        lower_edge = upper_edge + self.width
+        left_edge = num_horizontal + ((cell_row * (self.width + 1)) + cell_col)
+        right_edge = left_edge + 1
         return [upper_edge, lower_edge, left_edge, right_edge]
 
     def get_corner_vertexes(self, vertex_id):
@@ -58,9 +59,6 @@ class Slitherlink(object):
         return vertexes
 
     def get_adjacent_edges(self, edge_id):
-        vertical_edge = self.height * (self.width + 1)
-        horizontal_edge = self.width * (self.height + 1)
-        num_edges = vertical_edge + horizontal_edge
         num_vertexes = (self.width + 1) * (self.height + 1)
         v1, v2 = [vertex_id for vertex_id in range(num_vertexes)
                   if edge_id in self.get_corner_vertexes(vertex_id)]
@@ -94,13 +92,14 @@ class Slitherlink(object):
                     [e2, e3], [e2, e4], [e3, e4],
                     [-e1, -e2, -e3, -e4]]
 
+        self.cell_constraints = []
         # Base value of cell_id
         cell_id = -1
         list_value = [zero, one, two, three]
         for row in range(self.width):
             for col in range(self.height):
-                cell_value = self.cells[row][col]
                 cell_id += 1
+                cell_value = self.cells[row][col]
                 if cell_value is None:
                     pass
                 else:
@@ -169,7 +168,7 @@ class Slitherlink(object):
     def solve(self, input_filename=None):
         # Receive problem and take solution
         if input_filename is not None:
-            self.read_problem(input_filename)
+            self.read_problem(filename=input_filename)
         self.generate_cell_constraints()
         self.generate_loop_constraints()
         self.call_sat_solver()
