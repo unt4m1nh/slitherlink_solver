@@ -140,6 +140,9 @@ class Slitherlink(object):
 
     def call_sat_solver(self):
         constraints = self.cell_constraints + self.loop_constraints
+        #print number of clauses
+        numclause = len(constraints)
+        print(str(numclause) + "(number of clauses)")
         for solution in pycosat.itersolve(constraints):
             test_solution = [edge for edge in solution if edge > 0]
             result = self.is_one_loop(test_solution)
@@ -167,12 +170,17 @@ class Slitherlink(object):
 
     def solve(self, input_filename=None):
         # Receive problem and take solution
+        # start time
+        start = time.time()
         if input_filename is not None:
             self.read_problem(filename=input_filename)
         self.generate_cell_constraints()
         self.generate_loop_constraints()
         self.call_sat_solver()
         self.draw_solution()
+        # end time
+        end = time.time()
+        print("Total time: " + str(end - start))
 
     def draw_solution(self):
         num_row = 4 * (self.height + 1) + 1
