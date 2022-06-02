@@ -9,4 +9,4 @@ the numbers of edges in one cell) and the rules.
 Purpose
 
 - Solve slitherlink's problem using autoSAT solver (return solution)
-- Calculating solving time
+- Calculate solving time
